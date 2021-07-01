@@ -188,16 +188,28 @@ const char* MPE_EFFECT(effect)[2] = { #effect, NULL };
 
 #define MPE_PRIV_DEFINE_EFFECT_N(effect, ...) \
 const char* MPE_EFFECT(effect)[ML99_VARIADICS_COUNT(__VA_ARGS__) + 2] = { \
-  #effect, ML99_EVAL(ML99_variadicsForEach(ML99_appl(v(MPE_PRIV_opName), v(effect)), v(__VA_ARGS__))), NULL }; \
-ML99_EVAL(ML99_variadicsForEachI(ML99_appl(v(MPE_PRIV_defineEffect), v(effect)), v(__VA_ARGS__)))
+  #effect, ML99_EVAL(MPE_PRIV_opNameForEach(effect, __VA_ARGS__)) NULL }; \
+ML99_EVAL(MPE_PRIV_defineEffectForEach(effect, __VA_ARGS__))
 
-#define MPE_PRIV_opName_IMPL(effect, op) v(#effect "/" #op)
+/*
+ * #effect "/" #op1, ..., #effect "/" #opN,
+ */
+#define MPE_PRIV_opNameForEach(effect, ...) \
+ML99_variadicsForEach(ML99_appl(v(MPE_PRIV_opName), v(effect)), v(__VA_ARGS__))
+#define MPE_PRIV_opName_IMPL(effect, op) v(#effect "/" #op, )
 #define MPE_PRIV_opName_ARITY 2
 
+/*
+ * const struct mpe_optag_s MPE_OPTAG_DEF(effect, op1) = { MPE_EFFECT(effect), 1 };
+ * ...
+ * const struct mpe_optag_s MPE_OPTAG_DEF(effect, opN) = { MPE_EFFECT(effect), N };
+ */
+#define MPE_PRIV_defineEffectForEach(effect, ...) \
+ML99_variadicsForEachI(ML99_appl(v(MPE_PRIV_defineEffect), v(effect)), v(__VA_ARGS__))
 #define MPE_PRIV_defineEffect_IMPL(effect, op, i) \
 v(const struct mpe_optag_s MPE_OPTAG_DEF(effect, op) = { MPE_EFFECT(effect), i };)
 #define MPE_PRIV_defineEffect_ARITY 3
-// }
+// } (Effect definition generation)
 
 #define MPE_DEFINE_OP0(effect,op,restype) \
   restype effect##_##op() { void* res = mpe_perform(MPE_OPTAG(effect,op), NULL); return mpe_##restype##_voidp(res); }
