@@ -290,7 +290,7 @@ typedef const char* mpe_string_t;
 #define mpe_optag_voidp(v)     ((mpe_optag)mpe_ptr_voidp(v))
 #define mpe_voidp_optag(o)     mpe_voidp_ptr(o)
 
-// Arity specifiers {
+// Metalang99 arity specifiers {
 #define MPE_PRIV_opName_ARITY 2
 #define MPE_PRIV_defineEffect_ARITY 3
 // }
