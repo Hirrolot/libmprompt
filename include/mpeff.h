@@ -196,8 +196,8 @@ ML99_EVAL(MPE_PRIV_defineEffectForEach(effect, __VA_ARGS__))
  */
 #define MPE_PRIV_opNameForEach(effect, ...) \
 ML99_variadicsForEach(ML99_appl(v(MPE_PRIV_opName), v(effect)), v(__VA_ARGS__))
+
 #define MPE_PRIV_opName_IMPL(effect, op) v(#effect "/" #op, )
-#define MPE_PRIV_opName_ARITY 2
 
 /*
  * const struct mpe_optag_s MPE_OPTAG_DEF(effect, op1) = { MPE_EFFECT(effect), 1 };
@@ -206,9 +206,9 @@ ML99_variadicsForEach(ML99_appl(v(MPE_PRIV_opName), v(effect)), v(__VA_ARGS__))
  */
 #define MPE_PRIV_defineEffectForEach(effect, ...) \
 ML99_variadicsForEachI(ML99_appl(v(MPE_PRIV_defineEffect), v(effect)), v(__VA_ARGS__))
+
 #define MPE_PRIV_defineEffect_IMPL(effect, op, i) \
 v(const struct mpe_optag_s MPE_OPTAG_DEF(effect, op) = { MPE_EFFECT(effect), i };)
-#define MPE_PRIV_defineEffect_ARITY 3
 // } (Effect definition generation)
 
 #define MPE_DEFINE_OP0(effect,op,restype) \
@@ -290,5 +290,9 @@ typedef const char* mpe_string_t;
 #define mpe_optag_voidp(v)     ((mpe_optag)mpe_ptr_voidp(v))
 #define mpe_voidp_optag(o)     mpe_voidp_ptr(o)
 
+// Arity specifiers {
+#define MPE_PRIV_opName_ARITY 2
+#define MPE_PRIV_defineEffect_ARITY 3
+// }
 
 #endif
