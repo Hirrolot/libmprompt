@@ -231,6 +231,7 @@ target_compile_options(mpeff PRIVATE ${mp_cflags})
 target_include_directories(mpeff PUBLIC
     $<BUILD_INTERFACE:${CMAKE_CURRENT_SOURCE_DIR}/include>
     $<INSTALL_INTERFACE:${mp_install_dir}/include>
+    metalang99/include
 )
 if (NOT WIN32)
   target_link_libraries(mpeff PUBLIC ${mp_libs})
@@ -252,7 +253,7 @@ set(test_targets test_mpe_main test_mp_async test_mp_example_generator test_mp_e
 # finalize tests
 enable_testing()
 foreach(test_target ${test_targets} )
-  target_compile_options(${test_target} PRIVATE ${mp_cflags})
+  target_compile_options(${test_target} PRIVATE ${mp_cflags} -ftrack-macro-expansion=0)
   target_include_directories(${test_target} PRIVATE include test)
   target_link_libraries(${test_target} PRIVATE mpeff)
   add_test( ${test_target} ${test_target})

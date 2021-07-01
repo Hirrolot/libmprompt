@@ -11,7 +11,7 @@
 #include <stdexcept>
 #endif
 
-MPE_DEFINE_EFFECT1(multi, unwind)
+MPE_DEFINE_EFFECT(multi, unwind)
 MPE_DEFINE_OP0(multi, unwind, long)
 
 

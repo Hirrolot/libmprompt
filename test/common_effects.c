@@ -14,7 +14,7 @@
 /*-----------------------------------------------------------------
   Reader
 -----------------------------------------------------------------*/
-MPE_DEFINE_EFFECT1(reader, ask)
+MPE_DEFINE_EFFECT(reader, ask)
 MPE_DEFINE_OP0(reader, ask, long)
 
 // Tail optimized reader 
@@ -49,7 +49,7 @@ void* greader_handle(mpe_actionfun_t action, long init, void* arg) {
 /*-----------------------------------------------------------------
   Exception
 -----------------------------------------------------------------*/
-MPE_DEFINE_EFFECT1(exn, raise)
+MPE_DEFINE_EFFECT(exn, raise)
 MPE_DEFINE_VOIDOP1(exn, raise, mpe_string_t)
 
 static void* handle_exn_raise(mpe_resume_t* r, void* local, void* arg) {
@@ -70,7 +70,7 @@ void* exn_handle(mpe_actionfun_t action, void* arg) {
 /*-----------------------------------------------------------------
   State
 -----------------------------------------------------------------*/
-MPE_DEFINE_EFFECT2(state, get, set)
+MPE_DEFINE_EFFECT(state, get, set)
 MPE_DEFINE_OP0(state, get, long)
 MPE_DEFINE_VOIDOP1(state, set, long)
 
@@ -132,7 +132,7 @@ void* gstate_handle(mpe_actionfun_t action, long init, void* arg) {
    ambiguity handler
 -----------------------------------------------------------------*/
 
-MPE_DEFINE_EFFECT1(amb, flip)
+MPE_DEFINE_EFFECT(amb, flip)
 MPE_DEFINE_OP0(amb, flip, bool)
 
 // return(x){ [x] }
@@ -165,7 +165,7 @@ blist amb_handle(mpe_actionfun_t* action, void* arg) {
   choice handler
 -----------------------------------------------------------------*/
 
-MPE_DEFINE_EFFECT2(choice, choose, fail)
+MPE_DEFINE_EFFECT(choice, choose, fail)
 MPE_DEFINE_OP1(choice, choose, long, long)
 MPE_DEFINE_VOIDOP0(choice, fail)
 

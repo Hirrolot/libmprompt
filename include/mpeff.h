@@ -12,6 +12,8 @@
 #include <stdint.h>
 #include <stddef.h>
 
+#include <metalang99.h>
+
 //------------------------------------------------------
 // Compiler specific attributes
 //------------------------------------------------------
@@ -150,18 +152,12 @@ mpe_decl_export const char* mpe_effect_name(mpe_effect_t effect);
 /// Macros to define effect handlers.
 /// \{
 
-#define MPE_EFFECT(effect)         mpe_names_effect_##effect
-#define MPE_OPTAG_DEF(effect,op)   mpe_op_##effect##_##op
+#define MPE_EFFECT(effect)         ML99_CAT(mpe_names_effect_, effect)
+#define MPE_OPTAG_DEF(effect,op)   ML99_CAT4(mpe_op_, effect, _, op)
 #define MPE_OPTAG(effect,op)       &MPE_OPTAG_DEF(effect,op)
 
-#define MPE_DECLARE_EFFECT0(effect)  \
-extern const char* MPE_EFFECT(effect)[2];
-
-#define MPE_DECLARE_EFFECT1(effect,op1)  \
-extern const char* MPE_EFFECT(effect)[3];
-
-#define MPE_DECLARE_EFFECT2(effect,op1,op2)  \
-extern const char* MPE_EFFECT(effect)[4];
+#define MPE_DECLARE_EFFECT(...) \
+extern const char* MPE_EFFECT(ML99_VARIADICS_GET(0)(__VA_ARGS__))[ML99_VARIADICS_COUNT(__VA_ARGS__) + 1];
 
 #define MPE_DECLARE_OP(effect,op) \
 extern const struct mpe_optag_s MPE_OPTAG_DEF(effect,op);
@@ -182,59 +178,26 @@ void effect##_##op();
 MPE_DECLARE_OP(effect,op) \
 void effect##_##op(argtype arg);
 
+// Effect definition generation {
 
-#define MPE_DEFINE_EFFECT0(effect) \
-const char* MPE_EFFECT(effect)[2] = { #effect, NULL }; 
+#define MPE_DEFINE_EFFECT(...) \
+ML99_IF(ML99_VARIADICS_IS_SINGLE(__VA_ARGS__), MPE_PRIV_DEFINE_EFFECT_0, MPE_PRIV_DEFINE_EFFECT_N)(__VA_ARGS__) \
 
-#define MPE_DEFINE_EFFECT1(effect,op1) \
-const char* MPE_EFFECT(effect)[3] = { #effect, #effect "/" #op1, NULL }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op1) = { MPE_EFFECT(effect), 0 }; 
+#define MPE_PRIV_DEFINE_EFFECT_0(effect) \
+const char* MPE_EFFECT(effect)[2] = { #effect, NULL };
 
-#define MPE_DEFINE_EFFECT2(effect,op1,op2) \
-const char* MPE_EFFECT(effect)[4] = {  #effect, #effect "/" #op1, #effect "/" #op2, NULL }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op1) = { MPE_EFFECT(effect), 0 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op2) = { MPE_EFFECT(effect), 1 }; 
+#define MPE_PRIV_DEFINE_EFFECT_N(effect, ...) \
+const char* MPE_EFFECT(effect)[ML99_VARIADICS_COUNT(__VA_ARGS__) + 2] = { \
+  #effect, ML99_EVAL(ML99_variadicsForEach(ML99_appl(v(MPE_PRIV_opName), v(effect)), v(__VA_ARGS__))), NULL }; \
+ML99_EVAL(ML99_variadicsForEachI(ML99_appl(v(MPE_PRIV_defineEffect), v(effect)), v(__VA_ARGS__)))
 
-#define MPE_DEFINE_EFFECT3(effect,op1,op2,op3) \
-const char* MPE_EFFECT(effect)[5] = {  #effect, #effect "/" #op1, #effect "/" #op2, #effect "/" #op3, NULL }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op1) = { MPE_EFFECT(effect), 0 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op2) = { MPE_EFFECT(effect), 1 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op3) = { MPE_EFFECT(effect), 2 }; 
+#define MPE_PRIV_opName_IMPL(effect, op) v(#effect "/" #op)
+#define MPE_PRIV_opName_ARITY 2
 
-#define MPE_DEFINE_EFFECT4(effect,op1,op2,op3,op4) \
-const char* MPE_EFFECT(effect)[6] = {  #effect, #effect "/" #op1, #effect "/" #op2, #effect "/" #op3, #effect "/" #op4, NULL }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op1) = { MPE_EFFECT(effect), 0 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op2) = { MPE_EFFECT(effect), 1 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op3) = { MPE_EFFECT(effect), 2 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op4) = { MPE_EFFECT(effect), 3 }; 
-
-#define MPE_DEFINE_EFFECT5(effect,op1,op2,op3,op4,op5) \
-const char* MPE_EFFECT(effect)[7] = {  #effect, #effect "/" #op1, #effect "/" #op2, #effect "/" #op3, #effect "/" #op4, #effect "/" #op5, NULL }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op1) = { MPE_EFFECT(effect), 0 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op2) = { MPE_EFFECT(effect), 1 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op3) = { MPE_EFFECT(effect), 2 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op4) = { MPE_EFFECT(effect), 3 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op5) = { MPE_EFFECT(effect), 4 }; 
-
-#define MPE_DEFINE_EFFECT6(effect,op1,op2,op3,op4,op5,op6) \
-const char* MPE_EFFECT(effect)[8] = {  #effect, #effect "/" #op1, #effect "/" #op2, #effect "/" #op3, #effect "/" #op4, #effect "/" #op5, #effect "/" #op6, NULL }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op1) = { MPE_EFFECT(effect), 0 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op2) = { MPE_EFFECT(effect), 1 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op3) = { MPE_EFFECT(effect), 2 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op4) = { MPE_EFFECT(effect), 3 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op5) = { MPE_EFFECT(effect), 4 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op6) = { MPE_EFFECT(effect), 5 }; 
-
-#define MPE_DEFINE_EFFECT7(effect,op1,op2,op3,op4,op5,op6,op7) \
-const char* MPE_EFFECT(effect)[9] = {  #effect, #effect "/" #op1, #effect "/" #op2, #effect "/" #op3, #effect "/" #op4, #effect "/" #op5, #effect "/" #op6, #effect "/" #op7, NULL }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op1) = { MPE_EFFECT(effect), 0 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op2) = { MPE_EFFECT(effect), 1 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op3) = { MPE_EFFECT(effect), 2 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op4) = { MPE_EFFECT(effect), 3 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op5) = { MPE_EFFECT(effect), 4 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op6) = { MPE_EFFECT(effect), 5 }; \
-const struct mpe_optag_s MPE_OPTAG_DEF(effect,op7) = { MPE_EFFECT(effect), 6 }; 
-
+#define MPE_PRIV_defineEffect_IMPL(effect, op, i) \
+v(const struct mpe_optag_s MPE_OPTAG_DEF(effect, op) = { MPE_EFFECT(effect), i };)
+#define MPE_PRIV_defineEffect_ARITY 3
+// }
 
 #define MPE_DEFINE_OP0(effect,op,restype) \
   restype effect##_##op() { void* res = mpe_perform(MPE_OPTAG(effect,op), NULL); return mpe_##restype##_voidp(res); }

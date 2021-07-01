@@ -111,9 +111,9 @@ typedef struct mpe_frame_finally_s {
 
 
 // For search efficiency, non-handler frames are identified by a unique effect tag
-MPE_DEFINE_EFFECT0(mpe_frame_under)
-MPE_DEFINE_EFFECT0(mpe_frame_mask)
-MPE_DEFINE_EFFECT0(mpe_frame_finally)
+MPE_DEFINE_EFFECT(mpe_frame_under)
+MPE_DEFINE_EFFECT(mpe_frame_mask)
+MPE_DEFINE_EFFECT(mpe_frame_finally)
 
 
 // Resumption kinds: used to avoid allocation etc.
@@ -207,7 +207,7 @@ static void mpe_unwind_to(mpe_frame_handle_t* target, const mpe_operation_t* op,
 
 
 // Simulate operation definition for resume_unwind
-MPE_DEFINE_EFFECT1(mpe_unwind, mpe_unwind);
+MPE_DEFINE_EFFECT(mpe_unwind, mpe_unwind);
 
 static void* mpe_handle_op_unwind(mpe_resume_t* r, void* local, void* arg) {
   (void)(r); (void)(local);
