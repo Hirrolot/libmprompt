@@ -133,7 +133,7 @@ static void print_backtrace(const char* msg) {
 
 // Effect that returns its resumption
 MPE_DEFINE_EFFECT(exit, capture)
-MPE_DEFINE_VOIDOP0(exit, capture)
+MPE_DEFINE_VOIDOP(exit, capture)
 
 static void* op_exit_capture(mpe_resume_t* r, void* local, void* arg) {
   UNUSED(arg); UNUSED(local);

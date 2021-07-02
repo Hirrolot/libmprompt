@@ -15,7 +15,7 @@
   Reader
 -----------------------------------------------------------------*/
 MPE_DEFINE_EFFECT(reader, ask)
-MPE_DEFINE_OP0(reader, ask, long)
+MPE_DEFINE_OP(reader, ask, long)
 
 // Tail optimized reader 
 static void* handle_reader_ask(mpe_resume_t* r, void* local, void* arg) {
@@ -50,7 +50,7 @@ void* greader_handle(mpe_actionfun_t action, long init, void* arg) {
   Exception
 -----------------------------------------------------------------*/
 MPE_DEFINE_EFFECT(exn, raise)
-MPE_DEFINE_VOIDOP1(exn, raise, mpe_string_t)
+MPE_DEFINE_VOIDOP(exn, raise, mpe_string_t)
 
 static void* handle_exn_raise(mpe_resume_t* r, void* local, void* arg) {
   UNUSED(local); UNUSED(r);
@@ -71,8 +71,8 @@ void* exn_handle(mpe_actionfun_t action, void* arg) {
   State
 -----------------------------------------------------------------*/
 MPE_DEFINE_EFFECT(state, get, set)
-MPE_DEFINE_OP0(state, get, long)
-MPE_DEFINE_VOIDOP1(state, set, long)
+MPE_DEFINE_OP(state, get, long)
+MPE_DEFINE_VOIDOP(state, set, long)
 
 static void* handle_state_get(mpe_resume_t* r, void* local, void* arg) {
   UNUSED(arg);
@@ -133,7 +133,7 @@ void* gstate_handle(mpe_actionfun_t action, long init, void* arg) {
 -----------------------------------------------------------------*/
 
 MPE_DEFINE_EFFECT(amb, flip)
-MPE_DEFINE_OP0(amb, flip, bool)
+MPE_DEFINE_OP(amb, flip, bool)
 
 // return(x){ [x] }
 static void* handle_amb_result(void* local, void* arg) {
@@ -166,8 +166,8 @@ blist amb_handle(mpe_actionfun_t* action, void* arg) {
 -----------------------------------------------------------------*/
 
 MPE_DEFINE_EFFECT(choice, choose, fail)
-MPE_DEFINE_OP1(choice, choose, long, long)
-MPE_DEFINE_VOIDOP0(choice, fail)
+MPE_DEFINE_OP(choice, choose, long, long)
+MPE_DEFINE_VOIDOP(choice, fail)
 
 
 static void* handle_choice_result(void* local, void* arg) {

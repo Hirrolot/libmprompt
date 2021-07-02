@@ -12,7 +12,7 @@
   Define operations
 -----------------------------------------------------------------*/
 MPE_DEFINE_EFFECT(yield, yield)
-MPE_DEFINE_VOIDOP1(yield, yield, long)
+MPE_DEFINE_VOIDOP(yield, yield, long)
 
 
 /*-----------------------------------------------------------------

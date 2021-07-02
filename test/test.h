@@ -76,20 +76,20 @@ public:
 
 // Reader
 MPE_DECLARE_EFFECT(reader, ask)
-MPE_DECLARE_OP0(reader, ask, long)
+MPE_DECLARE_OP(reader, ask, long)
 
 void* reader_handle(mpe_actionfun_t* action, long init, void* arg);   // tail_noop
 void* greader_handle(mpe_actionfun_t* action, long init, void* arg);  // general 
 
 MPE_DECLARE_EFFECT(exn, raise)
-MPE_DECLARE_VOIDOP1(exn, raise, mpe_string_t)
+MPE_DECLARE_VOIDOP(exn, raise, mpe_string_t)
 
 void* exn_handle(mpe_actionfun_t* action, void* arg);
 
 // State
 MPE_DECLARE_EFFECT(state, get, set)
-MPE_DECLARE_OP0(state, get, long)
-MPE_DECLARE_VOIDOP1(state, set, long)
+MPE_DECLARE_OP(state, get, long)
+MPE_DECLARE_VOIDOP(state, set, long)
 
 void* state_handle(mpe_actionfun_t* action, long init, void* arg);    // tail_noop
 void* ustate_handle(mpe_actionfun_t* action, long init, void* arg);   // tail
@@ -98,15 +98,15 @@ void* ostate_handle(mpe_actionfun_t* action, long init, void* arg);   // scoped_
 
 // Ambiguity
 MPE_DECLARE_EFFECT(amb, flip)
-MPE_DECLARE_OP0(amb, flip, bool)
+MPE_DECLARE_OP(amb, flip, bool)
 
 typedef struct _bnode* blist;  // void* lists
 blist amb_handle(mpe_actionfun_t* action, void* arg);
 
 // Choice
 MPE_DECLARE_EFFECT(choice, choose, fail)
-MPE_DECLARE_OP1(choice, choose, long, long)
-MPE_DECLARE_VOIDOP0(choice, fail)
+MPE_DECLARE_OP(choice, choose, long, long)
+MPE_DECLARE_VOIDOP(choice, fail)
 
 blist choice_handle(mpe_actionfun_t* action, void* arg);
 

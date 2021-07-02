@@ -159,23 +159,27 @@ mpe_decl_export const char* mpe_effect_name(mpe_effect_t effect);
 #define MPE_DECLARE_EFFECT(...) \
 extern const char* MPE_EFFECT(ML99_VARIADICS_GET(0)(__VA_ARGS__))[ML99_VARIADICS_COUNT(__VA_ARGS__) + 1];
 
-#define MPE_DECLARE_OP(effect,op) \
+#define MPE_DECLARE_OP(effect, ...) ML99_OVERLOAD(MPE_PRIV_DECLARE_OP_, effect, __VA_ARGS__)
+
+#define MPE_PRIV_DECLARE_OP_2(effect,op) \
 extern const struct mpe_optag_s MPE_OPTAG_DEF(effect,op);
 
-#define MPE_DECLARE_OP0(effect,op,restype) \
-MPE_DECLARE_OP(effect,op) \
+#define MPE_PRIV_DECLARE_OP_3(effect,op,restype) \
+MPE_PRIV_DECLARE_OP_2(effect,op) \
 restype effect##_##op();
 
-#define MPE_DECLARE_OP1(effect,op,restype,argtype) \
-MPE_DECLARE_OP(effect,op) \
+#define MPE_PRIV_DECLARE_OP_4(effect,op,restype,argtype) \
+MPE_PRIV_DECLARE_OP_2(effect,op) \
 restype effect##_##op(argtype arg);
 
-#define MPE_DECLARE_VOIDOP0(effect,op) \
-MPE_DECLARE_OP(effect,op) \
+#define MPE_DECLARE_VOIDOP(effect, ...) ML99_OVERLOAD(MPE_PRIV_DECLARE_VOIDOP_, effect, __VA_ARGS__)
+
+#define MPE_PRIV_DECLARE_VOIDOP_2(effect,op) \
+MPE_PRIV_DECLARE_OP_2(effect,op) \
 void effect##_##op();
 
-#define MPE_DECLARE_VOIDOP1(effect,op,argtype) \
-MPE_DECLARE_OP(effect,op) \
+#define MPE_PRIV_DECLARE_VOIDOP_3(effect,op,argtype) \
+MPE_PRIV_DECLARE_OP_2(effect,op) \
 void effect##_##op(argtype arg);
 
 // Effect definition generation {
@@ -211,28 +215,36 @@ ML99_variadicsForEachI(ML99_appl(v(MPE_PRIV_defineEffect), v(effect)), v(__VA_AR
 v(const struct mpe_optag_s MPE_OPTAG_DEF(effect, op) = { MPE_EFFECT(effect), i };)
 // } (Effect definition generation)
 
-#define MPE_DEFINE_OP0(effect,op,restype) \
+#define MPE_DEFINE_OP(effect, op, ...) ML99_OVERLOAD(MPE_PRIV_DEFINE_OP_, effect, op, __VA_ARGS__)
+
+#define MPE_PRIV_DEFINE_OP_3(effect,op,restype) \
   restype effect##_##op() { void* res = mpe_perform(MPE_OPTAG(effect,op), NULL); return mpe_##restype##_voidp(res); }
 
-#define MPE_DEFINE_OP1(effect,op,restype,argtype) \
+#define MPE_PRIV_DEFINE_OP_4(effect,op,restype,argtype) \
   restype effect##_##op(argtype arg) { void* res = mpe_perform(MPE_OPTAG(effect,op), mpe_voidp_##argtype(arg)); return mpe_##restype##_voidp(res); }
 
-#define MPE_DEFINE_VOIDOP0(effect,op) \
+#define MPE_DEFINE_VOIDOP(effect, ...) ML99_OVERLOAD(MPE_PRIV_DEFINE_VOIDOP_, effect, __VA_ARGS__)
+
+#define MPE_PRIV_DEFINE_VOIDOP_2(effect,op) \
   void effect##_##op() { mpe_perform(MPE_OPTAG(effect,op), NULL); }
 
-#define MPE_DEFINE_VOIDOP1(effect,op,argtype) \
+#define MPE_PRIV_DEFINE_VOIDOP_3(effect,op,argtype) \
   void effect##_##op(argtype arg) { mpe_perform(MPE_OPTAG(effect,op), mpe_voidp_##argtype(arg)); }
 
-#define MPE_WRAP_FUN0(fun,restype) \
+#define MPE_WRAP_FUN(fun, ...) ML99_OVERLOAD(MPE_PRIV_WRAP_FUN_, fun, __VA_ARGS__)
+
+#define MPE_PRIV_WRAP_FUN_2(fun,restype) \
   void* wrap_##fun(void* arg) { (void)(arg); return mpe_voidp_##restype(fun()); }
 
-#define MPE_WRAP_FUN1(fun,argtype,restype) \
+#define MPE_PRIV_WRAP_FUN_3(fun,argtype,restype) \
   void* wrap_##fun(void* arg) { return mpe_voidp_##restype(fun(mpe_##argtype##_voidp(arg))); }
 
-#define MPE_WRAP_VOIDFUN0(fun) \
+#define MPE_WRAP_VOIDFUN(fun, ...) ML99_OVERLOAD(MPE_PRIV_WRAP_VOIDFUN_, fun, __VA_ARGS__)
+
+#define MPE_PRIV_WRAP_VOIDFUN_1(fun) \
   void* wrap_##fun(void* arg) { (void)(arg); fun(); return NULL; }
 
-#define MPE_WRAP_VOIDFUN1(fun,argtype) \
+#define MPE_PRIV_WRAP_VOIDFUN_2(fun,argtype) \
   void* wrap_##fun(void* arg) { fun(mpe_##argtype##_voidp(arg)); return NULL; }
 
 

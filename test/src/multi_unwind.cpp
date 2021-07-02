@@ -12,7 +12,7 @@
 #endif
 
 MPE_DEFINE_EFFECT(multi, unwind)
-MPE_DEFINE_OP0(multi, unwind, long)
+MPE_DEFINE_OP(multi, unwind, long)
 
 
 
